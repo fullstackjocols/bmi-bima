@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BMI Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .result {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Section UTAMA -->
+    <section class="BMI">
+      <div class="bg-slate-100">
+        <div class="mx-auto container p-5 md:-10 my-16">
+          <!-- Flex -->
+          <div class="lg:flex text-center">
+            <!-- Calculator BMI -->
+            <div class="lg:w-1/2">
+              <input
+                id="weight"
+                type="text"
+                placeholder="Weight (kg)"
+                class="p-2 border border-gray-300 rounded mb-4 w-full"
+              />
+              <input
+                id="height"
+                type="text"
+                placeholder="Height (m)"
+                class="p-2 border border-gray-300 rounded mb-4 w-full"
+              />
+              <button
+                id="calculate-btn"
+                class="bg-blue-500 text-white p-2 rounded"
+              >
+                Calculate BMI
+              </button>
+            </div>
+            <!-- Result -->
+            <div class="lg:w-1/2">
+              <div id="result" class="result"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      class BMICalculator {
+        constructor(weight, height) {
+          this.weight = weight;
+          this.height = height;
+        }
+
+        kalkulasi() {
+          return this.weight / (this.height * this.height);
+        }
+
+        category() {
+          const bmi = this.kalkulasi();
+          if (bmi < 18.5) return "Berat Rendah";
+          if (bmi >= 18.5 && bmi < 24.9) return "Berat Normal";
+          if (bmi >= 25 && bmi < 29.9) return "Berat Berlebih";
+          return "Obesitas";
+        }
+
+        tampilkan() {
+          const bmi = this.kalkulasi();
+          const category = this.category();
+          return "BMI: " + bmi.toFixed(2) + " (" + category + ")";
+        }
+      }
+
+      document
+        .getElementById("calculate-btn")
+        .addEventListener("click", function () {
+          const weight = parseFloat(document.getElementById("weight").value);
+          const height = parseFloat(document.getElementById("height").value);
+
+          if (isNaN(weight) || isNaN(height) || height <= 0) {
+            document.getElementById("result").innerText =
+              "Please enter valid weight and height.";
+            return;
+          }
+
+          const bmiCalculator = new BMICalculator(weight, height);
+          document.getElementById("result").innerText =
+            bmiCalculator.tampilkan();
+        });
+    </script>
+  </body>
+</html>
