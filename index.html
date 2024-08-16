@@ -10,39 +10,62 @@
         font-size: 1.2em;
         font-weight: bold;
       }
+      .description {
+        font-size: 1em;
+        color: #555;
+        margin-top: 10px;
+      }
     </style>
   </head>
   <body>
-    <!-- Section UTAMA -->
+    <!-- Main Section -->
     <section class="BMI">
-      <div class="bg-slate-100">
-        <div class="mx-auto container p-5 md:-10 my-16">
-          <!-- Flex -->
-          <div class="lg:flex text-center">
-            <!-- Calculator BMI -->
-            <div class="lg:w-1/2">
+      <div>
+        <div class="mx-auto container p-5 md:p-10 my-16">
+          <!-- Flex Container -->
+          <div
+            class="lg:flex text-center justify-center space-y-10 lg:space-y-0 lg:space-x-4"
+          >
+            <!-- BMI Calculator -->
+            <div
+              id="bmi-calculator"
+              class="max-w-md lg:max-w-lg shadow-lg p-6 border rounded-lg"
+            >
               <input
                 id="weight"
                 type="text"
                 placeholder="Weight (kg)"
-                class="p-2 border border-gray-300 rounded mb-4 w-full"
+                class="p-2 border border-gray-300 rounded mb-4 w-full focus:outline-none"
               />
               <input
                 id="height"
                 type="text"
                 placeholder="Height (m)"
-                class="p-2 border border-gray-300 rounded mb-4 w-full"
+                class="p-2 border border-gray-300 rounded mb-4 w-full focus:outline-none"
               />
-              <button
-                id="calculate-btn"
-                class="bg-blue-500 text-white p-2 rounded"
-              >
-                Calculate BMI
-              </button>
+              <!-- Buttons -->
+              <div>
+                <button
+                  id="calculate-btn"
+                  class="bg-blue-500 text-white p-2 rounded hover:opacity-90"
+                >
+                  Calculate BMI
+                </button>
+                <button
+                  id="reset-btn"
+                  class="bg-red-500 text-white p-2 rounded hover:opacity-90 hidden"
+                >
+                  Reset BMI
+                </button>
+              </div>
             </div>
-            <!-- Result -->
-            <div class="lg:w-1/2">
+            <!-- Result Display -->
+            <div
+              id="bmi-result"
+              class="w-full hidden lg:shadow-lg rounded-lg p-6"
+            >
               <div id="result" class="result"></div>
+              <p id="description" class="description"></p>
             </div>
           </div>
         </div>
@@ -52,7 +75,7 @@
       class BMICalculator {
         constructor(weight, height) {
           this.weight = weight;
-          this.height = height;
+          this.height = height / 100;
         }
 
         kalkulasi() {
@@ -72,6 +95,19 @@
           const category = this.category();
           return "BMI: " + bmi.toFixed(2) + " (" + category + ")";
         }
+
+        describeCategory(category) {
+          switch (category) {
+            case "Berat Rendah":
+              return "Risiko kesehatan rendah, tetapi mungkin kekurangan nutrisi.";
+            case "Berat Normal":
+              return "Berat badan ideal, risiko kesehatan rendah.";
+            case "Berat Berlebih":
+              return "Meningkatkan risiko kesehatan, disarankan diet dan olahraga.";
+            case "Obesitas":
+              return "Tinggi risiko kesehatan, disarankan konsultasi dokter.";
+          }
+        }
       }
 
       document
@@ -87,8 +123,35 @@
           }
 
           const bmiCalculator = new BMICalculator(weight, height);
+          const category = bmiCalculator.category();
           document.getElementById("result").innerText =
             bmiCalculator.tampilkan();
+          document.getElementById("description").innerText =
+            bmiCalculator.describeCategory(category);
+
+          // Adjust the widths after calculating
+          document.getElementById("bmi-calculator").className =
+            "w-full lg:w-1/2 shadow-lg rounded-lg p-6";
+          document.getElementById("bmi-result").className =
+            "w-full lg:w-1/2 shadow-lg rounded-lg p-6";
+          document.getElementById("bmi-result").classList.remove("hidden"); // Make result visible
+          document.getElementById("reset-btn").classList.remove("hidden"); // Show reset button
+        });
+
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", function () {
+          document.getElementById("weight").value = "";
+          document.getElementById("height").value = "";
+          document.getElementById("result").innerText = "";
+          document.getElementById("description").innerText = "";
+
+          // Hide the result div again and reset classes
+          document.getElementById("bmi-result").className =
+            "w-full hidden lg:shadow-lg rounded-lg p-6";
+          document.getElementById("reset-btn").classList.add("hidden"); // Hide reset button
+          document.getElementById("bmi-calculator").className =
+            "w-full lg:max-w-lg shadow-lg p-6 border rounded-lg"; // Reset the width
         });
     </script>
   </body>
